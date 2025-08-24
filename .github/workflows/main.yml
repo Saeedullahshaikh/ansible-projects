@@ -1,0 +1,25 @@
+name: Deploy LAMP setup playbook
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install Ansible
+      - name: Install Ansible
+        run: |
+          sudo apt update -y      
+          sudo apt install -y ansible
+
+      # Step 3: Run the LAMP playbook
+      - name: Run LAMP Setup Playbook
+        run: |
+          ansible-playbook ansible/lampsetup_pb.yml -i ansible/hosts -c local
