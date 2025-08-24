@@ -1,0 +1,39 @@
+---
+- name: Install and LAMP stack
+  hosts: all
+  become: yes
+  tasks:
+  - name: update apt cache
+    apt:
+      update_cache: yes
+
+  - name: Insatll Apache,Mysql, php and required package
+    apt:
+      name:
+        - apache2
+        - mysql-server
+        - php
+        - libapache2-mod-php
+        - php-mysql
+      state: present
+
+  - name: Start and enable Apache
+    service:
+      name: Apache2
+      state: started
+      enabled: true
+
+  - name: Start and enable Mysql
+    service:
+      name: mysql
+      state: started
+      enabled: true
+
+  - name: create a test php file 
+    copy:
+      dest: /var/www/html/info.php
+      content: |
+        <?php
+        phpinfo();
+        ?>
+
