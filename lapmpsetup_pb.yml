@@ -1,39 +1,52 @@
 ---
-- name: Install and LAMP stack
+- name: Install and configure a LAMP stack 
   hosts: all
   become: yes
+  vars:
+    pkg_mgr: "{{ 'apt' if ansible_os_family == 'Debian' else 'yum' }}"
+    apache_pkg: "{{ 'apache2' if ansible_os_family == 'Debian' else 'httpd' }}"
+    mysql_pkg: "{{ 'mysql-server' if ansible_os_family == 'Debian' else 'mariadb-server' }}"
+    php_pkg: "{{ 'php libapache2-mod-php php-mysql' if ansible_os_family == 'Debian' else 'php php-mysql' }}"
+
   tasks:
-  - name: update apt cache
-    apt:
-      update_cache: yes
+    - name: Update the package cache only for debian/ubuntu
+      package:
+        name: '*'
+        state: latest
+      when: pkg_mgr == 'apt'
 
-  - name: Insatll Apache,Mysql, php and required package
-    apt:
-      name:
-        - apache2
-        - mysql-server
-        - php
-        - libapache2-mod-php
-        - php-mysql
-      state: present
+    - name: Install Apache, MySQL/MariaDB, and PHP
+      package:
+        name:
+          - "{{ apache_pkg }}"
+          - "{{ mysql_pkg }}"
+          - "{{ php_pkg }}"
+        state: present
 
-  - name: Start and enable Apache
-    service:
-      name: Apache2
-      state: started
-      enabled: true
+    - name: install and start Apache
+      service:
+        name: "{{ apache_pkg }}"
+        state: started
+        enabled: true
 
-  - name: Start and enable Mysql
-    service:
-      name: mysql
-      state: started
-      enabled: true
+    - name: start and enable mysql/mariadb
+      service:
+        name: "{{ mysql_pkg }}"
+        state: started
+        enabled: true
 
-  - name: create a test php file 
-    copy:
-      dest: /var/www/html/info.php
-      content: |
-        <?php
-        phpinfo();
-        ?>
+    - name: Create a test PHP page
+      copy:
+        dest: /var/www/html/info.php
+        content: |
+          <?php
+          phpinfo();
+          ?>
+      notify:
+        - Restart Apache
 
+  handlers:
+    - name: Restart Apache
+      service:
+        name: "{{ apache_pkg }}"
+        state: restarted
