@@ -1,0 +1,10 @@
+---
+- name: First basic pb
+  hosts: localhost
+
+  tasks: 
+  - name: Test connectivity 
+    ping:
+  - name: "print output"
+    debug: msg="Alright!!"
+    
