@@ -22,4 +22,4 @@ jobs:
       # Step 3: Run the LAMP playbook
       - name: Run LAMP Setup Playbook
         run: |
-          ansible-playbook ansible-projects/lampsetup_pb.yml -i ansible/hosts -c local
+          ansible-playbook lampsetup_pb.yml -i ansible/hosts -c local
