@@ -1,4 +1,4 @@
-name: Deploy LAMP setup playbook
+name: Deploy Playbooks
 
 on:
   push:
@@ -7,19 +7,16 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      # Step 2: Install Ansible
-      - name: Install Ansible
-        run: |
-          sudo apt update -y      
-          sudo apt install -y ansible
-
-      # Step 3: Run the LAMP playbook
-      - name: Run LAMP Setup Playbook
-        run: |
-          ansible-playbook lampsetup_pb.yml -i ansible/hosts -c local
+      - name: Run Any Ansible Playbook
+        uses: ./  # local action
+        with:
+          inventory: "ansible/hosts"
+          playbook: "ansible-projects/lampsetup_pb.yml"
+          extra_vars: "env=dev"
+          become: "true"
+          verbosity: "2"
