@@ -32,7 +32,7 @@ inputs:
 
 runs:
   using: "docker"
-  image: "docker://ghcr.io/saeedu/ansible-container:01"
+  image: "docker://ghcr.io/Saeedullahshaikh/ansible-container:01"
   env:
     INVENTORY: ${{ inputs.inventory }}
     PLAYBOOK: ${{ inputs.playbook }}
