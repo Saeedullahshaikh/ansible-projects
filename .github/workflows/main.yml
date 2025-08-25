@@ -14,15 +14,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # Step 2: Login to GitHub Container Registry 
-      - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u saeedullahshaikh --password-stdin
-
-      # Step 3: Run any Ansible playbook using your local container action
+      # Step 2: Run any Ansible playbook using your local container action
       - name: Run Any Ansible Playbook
-        uses: ./  # local action
+        uses: ./ 
         with:
           inventory: "ansible/hosts"
+          playbook: "ansible-projects/lampsetup_pb.yml"
+          extra_vars: "env=dev"
+          become: "true"
+          verbosity: "2"
+
           playbook: "ansible-projects/lampsetup_pb.yml"
           extra_vars: "env=dev"
           become: "true"
