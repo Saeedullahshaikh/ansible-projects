@@ -24,8 +24,3 @@ jobs:
           become: "true"
           verbosity: "2"
 
-          playbook: "ansible-projects/lampsetup_pb.yml"
-          extra_vars: "env=dev"
-          become: "true"
-          verbosity: "2"
-
