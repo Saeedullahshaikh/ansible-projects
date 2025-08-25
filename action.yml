@@ -1,0 +1,44 @@
+name: "Run Ansible Playbook"
+description: "Run any Ansible playbook using a container."
+
+inputs:
+  inventory:
+    description: "Inventory file path"
+    required: true
+  playbook:
+    description: "Playbook file path"
+    required: true
+  extra_vars:
+    description: "Extra variables in key=value format"
+    required: false
+  limit:
+    description: "Limit run to specific hosts"
+    required: false
+  tags:
+    description: "Run only tasks with these tags"
+    required: false
+  check:
+    description: "Dry run mode"
+    required: false
+    default: "false"
+  become:
+    description: "Enable sudo"
+    required: false
+    default: "false"
+  verbosity:
+    description: "Verbosity level (0-4)"
+    required: false
+    default: "0"
+
+runs:
+  using: "docker"
+  image: "docker://ghcr.io/saeedu/ansible-container:01"
+  env:
+    INVENTORY: ${{ inputs.inventory }}
+    PLAYBOOK: ${{ inputs.playbook }}
+    EXTRA_VARS: ${{ inputs.extra_vars }}
+    LIMIT: ${{ inputs.limit }}
+    TAGS: ${{ inputs.tags }}
+    CHECK: ${{ inputs.check }}
+    BECOME: ${{ inputs.become }}
+    VERBOSITY: ${{ inputs.verbosity }}
