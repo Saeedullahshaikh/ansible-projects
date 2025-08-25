@@ -8,10 +8,17 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      # Step 2: Login to GitHub Container Registry 
+      - name: Login to GHCR
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u saeedullahshaikh --password-stdin
+
+      # Step 3: Run any Ansible playbook using your local container action
       - name: Run Any Ansible Playbook
         uses: ./  # local action
         with:
@@ -20,3 +27,4 @@ jobs:
           extra_vars: "env=dev"
           become: "true"
           verbosity: "2"
+
