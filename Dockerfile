@@ -13,6 +13,6 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD ansible-playbook --version || exit 1
+  CMD ["/bin/sh", "-c", "ansible-playbook --version || exit 1"]
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
