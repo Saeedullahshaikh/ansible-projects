@@ -6,18 +6,20 @@ VERBOSITY=${VERBOSITY:-0}
 BECOME=${BECOME:-false}
 CHECK=${CHECK:-false}
 
-ARGS=""
+# Use array to avoid argument splitting issues
+ARGS=()
 
-[ "$EXTRA_VARS" != "" ] && ARGS="$ARGS --extra-vars \"$EXTRA_VARS\""
-[ "$LIMIT" != "" ] && ARGS="$ARGS --limit $LIMIT"
-[ "$TAGS" != "" ] && ARGS="$ARGS --tags $TAGS"
-[ "$CHECK" == "true" ] && ARGS="$ARGS --check"
-[ "$BECOME" == "true" ] && ARGS="$ARGS --become"
+[ -n "$EXTRA_VARS" ] && ARGS+=("--extra-vars" "$EXTRA_VARS")
+[ -n "$LIMIT" ] && ARGS+=("--limit" "$LIMIT")
+[ -n "$TAGS" ] && ARGS+=("--tags" "$TAGS")
+[ "$CHECK" = "true" ] && ARGS+=("--check")
+[ "$BECOME" = "true" ] && ARGS+=("--become")
 
-# Add verbosity
+# Add verbosity (-v, -vv, -vvv…)
 for ((i=0;i<VERBOSITY;i++)); do
-    ARGS="$ARGS -v"
+    ARGS+=("-v")
 done
 
 # Run playbook
-exec ansible-playbook "$PLAYBOOK" -i "$INVENTORY" $ARGS
+exec ansible-playbook "$PLAYBOOK" -i "$INVENTORY" "${ARGS[@]}"
+
